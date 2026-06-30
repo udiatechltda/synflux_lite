@@ -1,0 +1,118 @@
+name: Deploy PDV
+
+on:
+  release:
+    types: [published]
+
+env:
+  HUSKY: 0
+
+jobs:
+  build:
+    name: Build e Empacotamento
+    runs-on: windows-latest
+    env:
+      NUGET_PACKAGES: C:\np
+    outputs:
+      version: ${{ steps.meta.outputs.VERSION }}
+      zip_name: ${{ steps.meta.outputs.ZIP_NAME }}
+      sha256: ${{ steps.sha256.outputs.SHA256 }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Forcar SDK .NET 8
+        shell: powershell
+        run: |
+          '{"sdk":{"version":"8.0.0","rollForward":"latestMinor"}}' | Out-File -FilePath global.json -Encoding utf8
+
+      - name: Extrair versao da tag
+        id: meta
+        run: |
+          $tag = "${{ github.event.release.tag_name }}"
+          $version = $tag.TrimStart('v')
+          $zipName = "PDV-$tag-win-x64.zip"
+          "VERSION=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "ZIP_NAME=$zipName"  | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Publicar Updater (popula cache do ILLink antes do build do PDV)
+        run: dotnet publish Tools/TechOne.PDV.Updater/TechOne.PDV.Updater.csproj -c Release -r win-x64 -p:SelfContained=true -p:PublishSingleFile=true -o artifacts/updater-publish/
+
+      - name: Publicar PDV (win-x64, self-contained)
+        run: dotnet publish PDV.csproj -c Release -r win-x64 --self-contained true -o publish/
+
+      - name: Criar pacote ZIP
+        run: Compress-Archive -Path publish/* -DestinationPath "${{ steps.meta.outputs.ZIP_NAME }}"
+
+      - name: Calcular SHA256
+        id: sha256
+        run: |
+          $hash = (Get-FileHash "${{ steps.meta.outputs.ZIP_NAME }}" -Algorithm SHA256).Hash.ToLower()
+          "SHA256=$hash" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          Write-Host "SHA256: $hash"
+
+      - name: Upload artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdv-package
+          path: ${{ steps.meta.outputs.ZIP_NAME }}
+          retention-days: 1
+
+  deploy:
+    name: Deploy no servidor
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar artefato
+        uses: actions/download-artifact@v4
+        with:
+          name: pdv-package
+
+      - name: Instalar sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Enviar ZIP ao servidor
+        env:
+          SSHPASS: ${{ secrets.DEPLOY_PASSWORD }}
+        run: |
+          sshpass -e scp -o StrictHostKeyChecking=no \
+            "${{ needs.build.outputs.zip_name }}" \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/downloads/${{ needs.build.outputs.zip_name }}
+
+      - name: Preparar script de atualizacao
+        run: |
+          cat > /tmp/update_appsettings.py << 'EOF'
+          import json
+          path = '/opt/T2TiRetaguardaSH/appsettings.json'
+          with open(path) as f:
+              c = json.load(f)
+          c['Updates']['Pdv'].update({
+              'Enabled': True,
+              'Version': '__VERSION__',
+              'PackageUrl': '/downloads/__ZIP__',
+              'Sha256': '__SHA256__',
+              'ReleaseNotes': 'Release __VERSION__'
+          })
+          with open(path, 'w') as f:
+              json.dump(c, f, indent=2, ensure_ascii=False)
+          print('appsettings.json atualizado')
+          EOF
+          sed -i 's/__VERSION__/${{ needs.build.outputs.version }}/g' /tmp/update_appsettings.py
+          sed -i 's/__ZIP__/${{ needs.build.outputs.zip_name }}/g' /tmp/update_appsettings.py
+          sed -i 's/__SHA256__/${{ needs.build.outputs.sha256 }}/g' /tmp/update_appsettings.py
+
+      - name: Enviar e executar script no servidor
+        env:
+          SSHPASS: ${{ secrets.DEPLOY_PASSWORD }}
+        run: |
+          sshpass -e scp -o StrictHostKeyChecking=no \
+            /tmp/update_appsettings.py \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/tmp/update_appsettings.py
+          sshpass -e ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            "python3 /tmp/update_appsettings.py && docker restart t2ti-app-dotnet && rm /tmp/update_appsettings.py && echo 'Deploy PDV OK: ${{ needs.build.outputs.version }}'"

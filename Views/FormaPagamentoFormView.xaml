@@ -1,0 +1,89 @@
+<UserControl x:Class="PDV.Views.FormaPagamentoFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:PDV.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:FormaPagamentoFormViewModel}"
+             d:DesignHeight="600" d:DesignWidth="800">
+
+    <Grid Background="#F7FAFC">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Padding="20" Background="White" BorderThickness="0,0,0,1" BorderBrush="#E2E8F0">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{Binding Titulo}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TitleBrush}"/>
+                    <TextBlock Text="Tipos de recebimento e integrações fiscais." FontSize="14" Foreground="#718096" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Style="{StaticResource DefaultButtonStyle}" Command="{Binding SalvarCommand}" Content="Salvar" Width="120" Height="40" Margin="0,0,10,0"/>
+                    <Button Content="Cancelar" Command="{Binding CancelarCommand}" Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="1" Width="100" Height="40"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20">
+                <GroupBox Header="Dados do Pagamento" Padding="15" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="200"/></Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,15">
+                            <TextBlock Text="Código *" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Codigo}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,15">
+                            <TextBlock Text="Descrição *" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Descricao}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,15">
+                            <TextBlock Text="Código SEFAZ (NFC-e)" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.CodigoPagamentoNfce}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Header="Regras e Integração" Padding="15">
+                    <UniformGrid Columns="2">
+                        <StackPanel Margin="0,0,10,15">
+                            <TextBlock Text="Utiliza TEF (Cartão)" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <ComboBox SelectedValue="{Binding Model.Tef}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="Não" Tag="N" IsSelected="True"/>
+                                <ComboBoxItem Content="Sim" Tag="S"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Permite Troco" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <ComboBox SelectedValue="{Binding Model.PermiteTroco}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="Não" Tag="N" IsSelected="True"/>
+                                <ComboBoxItem Content="Sim" Tag="S"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,10,0">
+                            <TextBlock Text="Imprime Vinculado" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <ComboBox SelectedValue="{Binding Model.ImprimeVinculado}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="Não" Tag="N" IsSelected="True"/>
+                                <ComboBoxItem Content="Sim" Tag="S"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Gera Parcelas (Financeiro)" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <ComboBox SelectedValue="{Binding Model.GeraParcelas}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="Não" Tag="N" IsSelected="True"/>
+                                <ComboBoxItem Content="Sim" Tag="S"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </UniformGrid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

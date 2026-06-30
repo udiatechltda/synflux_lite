@@ -1,0 +1,184 @@
+<Window x:Class="PDV.Views.ConfirmacaoRegistroView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:behaviors="clr-namespace:PDV.Utilities.Behaviors"
+        Title="Registro do usuário"
+        Width="620"
+        Height="720"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource BackgroundDefaulBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Border Background="White"
+                CornerRadius="12"
+                Padding="30"
+                Margin="24"
+                HorizontalAlignment="Center"
+                Width="540">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" BlurRadius="16" ShadowDepth="2" Opacity="0.08"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <TextBlock Text="Registro do usuário"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="#1A202C"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,4"/>
+                <TextBlock Text="{Binding Mensagem}"
+                           FontSize="12"
+                           Foreground="#4B5563"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="0,0,0,18"/>
+
+                <Border Background="#F7FAFC"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="12"
+                        MaxHeight="210"
+                        Visibility="{Binding NaoPendenteDeConfirmacao, Converter={StaticResource BoolToVisibility}}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <TextBlock FontSize="12"
+                                   Foreground="#1F2937"
+                                   TextWrapping="Wrap"
+                                   LineHeight="18"
+                                   Text="TERMOS GERAIS E CONDIÇÕES DE USO&#x0a;&#x0a;Ao registrar a empresa, o usuário declara que os dados informados são verdadeiros, que possui autorização para operar o PDV em nome da empresa cadastrada e que aceita as regras de uso da aplicação. O usuário também declara ciência de que operações fiscais, controle de caixa, vendas, estoque e sincronizações devem respeitar a legislação aplicável e as configurações feitas pela própria empresa."/>
+                    </ScrollViewer>
+                </Border>
+
+                <StackPanel Margin="0,16,0,0"
+                            Visibility="{Binding NaoPendenteDeConfirmacao, Converter={StaticResource BoolToVisibility}}">
+                    <CheckBox Content="Informo que sou MEI devidamente cadastrado no SIMEI"
+                              IsChecked="{Binding EmpresaMei}"
+                              FontSize="13"
+                              Foreground="#1F2937"
+                              Margin="0,0,0,10"/>
+                    <CheckBox Content="Aceito e concordo com os Termos de Uso"
+                              IsChecked="{Binding AceitaTermos}"
+                              FontSize="13"
+                              Foreground="#1F2937"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,16,0,0"
+                            Visibility="{Binding PendenteDeConfirmacao, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="Código de confirmação"
+                               FontSize="12"
+                               Foreground="#8A94A6"
+                               Margin="0,0,0,5"/>
+                    <Border CornerRadius="8" BorderThickness="1" BorderBrush="#D0D5DD" Height="42">
+                        <TextBox x:Name="CodigoConfirmacaoInput"
+                                 Text="{Binding CodigoConfirmacao, UpdateSourceTrigger=PropertyChanged}"
+                                 BorderThickness="0"
+                                 Padding="12,0"
+                                 MaxLength="32"
+                                 FontSize="14"
+                                 Foreground="#111827"
+                                 VerticalContentAlignment="Center"
+                                 TextChanged="CodigoConfirmacaoInput_TextChanged"/>
+                    </Border>
+                    <TextBlock Text="Informe o código de confirmação enviado para o e-mail cadastrado."
+                               FontSize="11"
+                               Foreground="#6B7280"
+                               TextWrapping="Wrap"
+                               Margin="0,6,0,0"/>
+                </StackPanel>
+
+                <Button Command="{Binding ConfirmarTermosCommand}"
+                        behaviors:ButtonLoading.IsEnabled="True"
+                        IsEnabled="{Binding IsNotLoading}"
+                        Height="42"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Margin="0,20,0,10"
+                        Visibility="{Binding NaoPendenteDeConfirmacao, Converter={StaticResource BoolToVisibility}}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="#1C3E72" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#2A52A0"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="border" Property="Background" Value="#9CA3AF"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <TextBlock Text="Confirmar" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                </Button>
+
+                <Grid Margin="0,20,0,10"
+                      Visibility="{Binding PendenteDeConfirmacao, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0"
+                            Command="{Binding ConfirmarCodigoCommand}"
+                            behaviors:ButtonLoading.IsEnabled="True"
+                            IsEnabled="{Binding IsNotLoading}"
+                            Height="42"
+                            BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border" Background="#1C3E72" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#2A52A0"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="border" Property="Background" Value="#9CA3AF"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <TextBlock Text="Validar código" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                    </Button>
+
+                    <Button Grid.Column="2"
+                            Command="{Binding ReenviarEmailCommand}"
+                            behaviors:ButtonLoading.IsEnabled="True"
+                            IsEnabled="{Binding IsNotLoading}"
+                            Height="42"
+                            BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border"
+                                        Background="White"
+                                        BorderBrush="#1C3E72"
+                                        BorderThickness="1"
+                                        CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#EEF3FA"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <TextBlock Text="Reenviar e-mail" FontSize="14" FontWeight="SemiBold" Foreground="#1C3E72"/>
+                    </Button>
+                </Grid>
+
+                <TextBlock Text="Fechar"
+                           FontSize="12"
+                           Foreground="#1C3E72"
+                           HorizontalAlignment="Center"
+                           Cursor="Hand"
+                           MouseLeftButtonUp="Fechar_Click"/>
+            </StackPanel>
+        </Border>
+    </ScrollViewer>
+</Window>

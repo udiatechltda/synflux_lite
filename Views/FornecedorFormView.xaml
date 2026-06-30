@@ -1,0 +1,214 @@
+<UserControl x:Class="PDV.Views.FornecedorFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:PDV.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:FornecedorFormViewModel}"
+             d:DesignHeight="800" d:DesignWidth="1000">
+
+    <Grid Background="#F7FAFC">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0" Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{Binding Titulo}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TitleBrush}"/>
+                    <TextBlock Text="Cadastro de Fornecedores e Parceiros" FontSize="14" Foreground="#718096" Margin="0,4,0,0"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Style="{StaticResource DefaultButtonStyle}" 
+                            Command="{Binding SalvarCommand}"
+                            Content="Salvar Cadastro" 
+                            Width="150" Height="40" Margin="0,0,10,0"/>
+                    <Button Content="Cancelar" 
+                            Command="{Binding CancelarCommand}"
+                            Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="1"
+                            Width="100" Height="40"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- FORMULARIO -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20">
+                
+                <GroupBox Header="Dados do Fornecedor" Margin="0,0,0,20" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Linha 0: Razão Social | Fantasia | Data Cadastro -->
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,15">
+                            <TextBlock Text="Razão Social *" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Nome}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,15">
+                            <TextBlock Text="Nome Fantasia" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Fantasia}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,15">
+                            <TextBlock Text="Data Cadastro" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <DatePicker SelectedDate="{Binding Model.DataCadastro}" IsEnabled="False"/>
+                        </StackPanel>
+
+                        <!-- Linha 1: Email | CPF/CNPJ | Tipo Pessoa -->
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,15">
+                            <TextBlock Text="Email" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Email}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,10,15">
+                            <TextBlock Text="CPF / CNPJ" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.CpfCnpj}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,15">
+                            <TextBlock Text="Tipo Pessoa" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <ComboBox SelectedValue="{Binding Model.TipoPessoa}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="Jurídica" Tag="J"/>
+                                <ComboBoxItem Content="Física" Tag="F"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Linha 2: RG | Órgão Emissor | Data Emissão RG -->
+                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,15">
+                            <TextBlock Text="RG" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Rg}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,10,15">
+                            <TextBlock Text="Órgão Emissor" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.OrgaoRg}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,0,0,15">
+                            <TextBlock Text="Data Emissão RG" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <DatePicker SelectedDate="{Binding Model.DataEmissaoRg}"/>
+                        </StackPanel>
+
+                        <!-- Linha 3: Sexo | Inscrição Estadual | Inscrição Municipal -->
+                        <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,15">
+                            <TextBlock Text="Sexo" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <ComboBox SelectedValue="{Binding Model.Sexo}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="Masculino" Tag="M"/>
+                                <ComboBoxItem Content="Feminino"  Tag="F"/>
+                                <ComboBoxItem Content="Outro"     Tag="O"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,0,10,15">
+                            <TextBlock Text="Inscrição Estadual" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.InscricaoEstadual}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Grid.Column="2" Margin="0,0,0,15">
+                            <TextBlock Text="Inscrição Municipal" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.InscricaoMunicipal}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+
+                        <!-- Linha 4: Website (colspam 2) -->
+                        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,0">
+                            <TextBlock Text="Website (URL)" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Url}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Header="Endereço de Faturamento" Margin="0,0,0,20" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,15">
+                            <TextBlock Text="CEP" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding Model.Cep}" Style="{StaticResource TextBoxStyle}"/>
+                                <Button Grid.Column="1" Command="{Binding BuscarCepCommand}" Content="🔍" Padding="5,0" Margin="5,0,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,15">
+                            <TextBlock Text="Logradouro" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Logradouro}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,15">
+                            <TextBlock Text="Número" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Numero}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,10,15">
+                            <TextBlock Text="Complemento" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Complemento}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,15">
+                            <TextBlock Text="Bairro" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Bairro}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,15">
+                            <TextBlock Text="Cidade" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Cidade}" Style="{StaticResource TextBoxStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,10,15">
+                            <TextBlock Text="UF" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Model.Uf}" Style="{StaticResource TextBoxStyle}" MaxLength="2"/>
+                        </StackPanel>
+                        
+                        <Grid Grid.Row="3" Grid.ColumnSpan="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="Telefone Comercial" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Model.Telefone}" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                <TextBlock Text="Celular / Contato" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Model.Celular}" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Responsável Vendas" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Model.Contato}" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Padding="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="0,1,0,0">
+            <TextBlock Text="* Campos obrigatórios para homologação de fornecedores." FontSize="11" Foreground="#E53E3E"/>
+        </Border>
+    </Grid>
+</UserControl>

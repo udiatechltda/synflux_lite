@@ -1,0 +1,168 @@
+<UserControl x:Class="PDV.Views.EmpresaFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:PDV.ViewModels"
+             xmlns:utilities="clr-namespace:PDV.Utilities"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:EmpresaFormViewModel}"
+             d:DesignHeight="800" d:DesignWidth="1000">
+
+    <Grid Background="#F7FAFC">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{Binding Titulo}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TitleBrush}"/>
+                    <TextBlock Text="Configurações da Empresa e Dados Fiscais" FontSize="14" Foreground="#718096" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Style="{StaticResource DefaultButtonStyle}" Command="{Binding SalvarCommand}" Content="Salvar" Width="120" Height="40" Margin="0,0,10,0"/>
+                    <Button Content="Cancelar" Command="{Binding CancelarCommand}" Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="1" Width="100" Height="40"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <TabControl Grid.Row="1" Margin="20" Background="Transparent" BorderThickness="0">
+            <!-- DADOS BÁSICOS -->
+            <TabItem Header="Dados Básicos">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,20,0,0">
+                        <GroupBox Header="Identificação" Padding="15" Margin="0,0,0,20">
+                            <Grid>
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,15">
+                                    <TextBlock Text="Razão Social *" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding Model.RazaoSocial}" Style="{StaticResource TextBoxStyle}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,15">
+                                    <TextBlock Text="Nome Fantasia" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding Model.NomeFantasia}" Style="{StaticResource TextBoxStyle}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,15">
+                                    <TextBlock Text="CNPJ *" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding Model.Cnpj}" Style="{StaticResource TextBoxStyle}"/>
+                                </StackPanel>
+
+                                <UniformGrid Grid.Row="1" Grid.ColumnSpan="3" Columns="4">
+                                    <StackPanel Margin="0,0,10,15">
+                                        <TextBlock Text="Inscrição Estadual" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding Model.InscricaoEstadual}" Style="{StaticResource TextBoxStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,10,15">
+                                        <TextBlock Text="Inscrição Municipal" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding Model.InscricaoMunicipal}" Style="{StaticResource TextBoxStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,10,15">
+                                        <TextBlock Text="Data Constituição" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                        <DatePicker SelectedDate="{Binding Model.DataConstituicao}"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="Tipo" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                        <ComboBox SelectedValue="{Binding Model.Tipo}">
+                                            <ComboBoxItem Content="Matriz" IsSelected="True"/>
+                                            <ComboBoxItem Content="Filial"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </UniformGrid>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Header="Localização e Contato" Padding="15">
+                            <Grid>
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="150"/><ColumnDefinition Width="*"/><ColumnDefinition Width="100"/></Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,15">
+                                    <TextBlock Text="CEP" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <TextBox Text="{Binding Model.Cep}" Style="{StaticResource TextBoxStyle}"/>
+                                        <Button Grid.Column="1" Command="{Binding BuscarCepCommand}" Content="🔍" Margin="5,0,0,0"/></Grid>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,15">
+                                    <TextBlock Text="Logradouro" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding Model.Logradouro}" Style="{StaticResource TextBoxStyle}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="2">
+                                    <TextBlock Text="Número" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding Model.Numero}" Style="{StaticResource TextBoxStyle}"/>
+                                </StackPanel>
+
+                                <UniformGrid Grid.Row="1" Grid.ColumnSpan="3" Columns="3">
+                                    <StackPanel Margin="0,0,10,15"><TextBlock Text="Bairro" Style="{StaticResource LabelStyle}"/><TextBox Text="{Binding Model.Bairro}" Style="{StaticResource TextBoxStyle}"/></StackPanel>
+                                    <StackPanel Margin="0,0,10,15"><TextBlock Text="Cidade" Style="{StaticResource LabelStyle}"/><TextBox Text="{Binding Model.Cidade}" Style="{StaticResource TextBoxStyle}"/></StackPanel>
+                                    <StackPanel><TextBlock Text="UF" Style="{StaticResource LabelStyle}"/><TextBox Text="{Binding Model.Uf}" Style="{StaticResource TextBoxStyle}"/></StackPanel>
+                                </UniformGrid>
+                            </Grid>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- DADOS FISCAIS -->
+            <TabItem Header="Dados Fiscais">
+                <StackPanel Margin="0,20,0,0">
+                    <GroupBox Header="Configurações Tributárias" Padding="15">
+                        <UniformGrid Columns="2">
+                            <StackPanel Margin="0,0,10,15">
+                                <TextBlock Text="CRT (Cód. Regime Tributário)" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                <ComboBox SelectedValue="{Binding Model.Crt}">
+                                    <ComboBoxItem Content="1 - Simples Nacional" IsSelected="True"/>
+                                    <ComboBoxItem Content="2 - Simples Nacional (Excesso)"/>
+                                    <ComboBoxItem Content="3 - Regime Normal"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="Tipo Regime" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Model.TipoRegime}" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock Text="Alíquota PIS (%)" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Model.AliquotaPis}" utilities:DecimalTextBoxBehavior.Format="N2" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Alíquota COFINS (%)" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Model.AliquotaCofins}" utilities:DecimalTextBoxBehavior.Format="N2" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                        </UniformGrid>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+
+            <!-- OUTROS -->
+            <TabItem Header="Outros">
+                <StackPanel Margin="0,20,0,0">
+                    <GroupBox Header="Logotipo e Preferências" Padding="15">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="200"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <Border Width="180" Height="120" BorderBrush="#E2E8F0" BorderThickness="1" Background="White" CornerRadius="8">
+                                    <Image Source="{Binding Model.Logotipo}" Stretch="Uniform" Margin="10"/>
+                                </Border>
+                                <Button Content="Carregar Logo" Command="{Binding CarregarLogotipoCommand}" Margin="0,10,0,0" Width="120"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                                <CheckBox Content="Empresa Registrada" IsChecked="{Binding Model.Registrado}" Margin="0,0,0,10"/>
+                                <CheckBox Content="Optante pelo SIMEI" IsChecked="{Binding Model.Simei}" Margin="0,0,0,10"/>
+                                <TextBlock Text="Natureza Jurídica" Style="{StaticResource LabelStyle}" Margin="0,10,0,5"/>
+                                <TextBox Text="{Binding Model.NaturezaJuridica}" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

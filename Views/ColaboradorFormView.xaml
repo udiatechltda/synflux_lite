@@ -1,0 +1,264 @@
+<UserControl x:Class="PDV.Views.ColaboradorFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:utilities="clr-namespace:PDV.Utilities"
+             xmlns:vm="clr-namespace:PDV.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:ColaboradorFormViewModel}"
+             d:DesignHeight="800" d:DesignWidth="1000"
+             Background="#ECEFF1">
+
+    <UserControl.Resources>
+
+        <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#8A94A6"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <Style x:Key="FieldBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#1A202C"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D0D5DD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FieldComboStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#1A202C"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D0D5DD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="border" Background="{TemplateBinding Background}"
+                                    CornerRadius="8" BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}" Padding="10,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter Grid.Column="0"
+                                                      Content="{TemplateBinding SelectionBoxItem}"
+                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                      VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="∨" FontSize="10"
+                                               Foreground="#6B7280" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                </Grid>
+                            </Border>
+                            <ToggleButton Opacity="0"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          Focusable="False"/>
+                            <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
+                                   AllowsTransparency="True" Focusable="False">
+                                <Border Background="White" CornerRadius="8"
+                                        BorderBrush="#E5E7EB" BorderThickness="1" Margin="0,4,0,0">
+                                    <ScrollViewer>
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#9CA3AF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Background="Transparent" BorderThickness="0"
+                        Command="{Binding CancelarCommand}" Cursor="Hand"
+                        Margin="0,0,12,0" Padding="6,4">
+                    <TextBlock Text="←" FontSize="20" Foreground="#1C3E72" FontWeight="SemiBold"/>
+                </Button>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="Colaborador - Inserido"
+                               FontSize="18" FontWeight="SemiBold" Foreground="#1A202C"/>
+                    <TextBlock Text="PDV - Cadastros" FontSize="11" Foreground="#999999"/>
+                </StackPanel>
+
+                <Button Grid.Column="2"
+                        Command="{Binding SalvarCommand}"
+                        Cursor="Hand" Margin="5,0"
+                        Width="100" Height="38"
+                        Background="#1C3E72" Foreground="White"
+                        BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}"
+                                    CornerRadius="8" Padding="14,0">
+                                <TextBlock Text="Salvar" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="White" HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#2A52A0"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- CONTEÚDO -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <!-- INFORMAÇÕES PESSOAIS -->
+                <Border Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Informações Pessoais"
+                                   FontSize="14" FontWeight="SemiBold" Foreground="#1A202C"
+                                   Margin="0,0,0,15"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Nome Completo *" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding Model.Nome}" Style="{StaticResource FieldBoxStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="CPF *" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding Model.Cpf}" Style="{StaticResource FieldBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,15,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Telefone" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding Model.Telefone}" Style="{StaticResource FieldBoxStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Celular" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding Model.Celular}" Style="{StaticResource FieldBoxStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="E-mail" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding Model.Email}" Style="{StaticResource FieldBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- CONFIGURAÇÕES E COMISSÕES -->
+                <Border Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Configurações e Comissões"
+                                   FontSize="14" FontWeight="SemiBold" Foreground="#1A202C"
+                                   Margin="0,0,0,15"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Comissão Vista (%)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding Model.ComissaoVista}"
+                                         utilities:DecimalTextBoxBehavior.Format="N2"
+                                         Style="{StaticResource FieldBoxStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Comissão Prazo (%)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding Model.ComissaoPrazo}"
+                                         utilities:DecimalTextBoxBehavior.Format="N2"
+                                         Style="{StaticResource FieldBoxStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Nível Autorização" Style="{StaticResource FieldLabelStyle}"/>
+                                <ComboBox SelectedValue="{Binding Model.NivelAutorizacao}"
+                                          Style="{StaticResource FieldComboStyle}">
+                                    <ComboBoxItem Content="1 - Vendedor" IsSelected="True"/>
+                                    <ComboBoxItem Content="2 - Supervisor"/>
+                                    <ComboBoxItem Content="3 - Gerente"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="6">
+                                <TextBlock Text="Tipo Veículo (Entregador)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding Model.EntregadorVeiculo}"
+                                         Style="{StaticResource FieldBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

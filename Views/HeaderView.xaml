@@ -1,0 +1,174 @@
+﻿<UserControl x:Class="PDV.Views.HeaderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignWidth="900">
+
+    <UserControl.Resources>
+        <Style x:Key="TopMenuItemStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#2D3748"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F7FAFC"/>
+                    <Setter Property="Foreground" Value="#4A5568"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Estilo para o botão de menu hamburguer -->
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#EBEBEB"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#DCDCDC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- borda inferior em todo o header, de ponta a ponta -->
+    <Border Background="White"
+            BorderBrush="#E5E7EB"
+            BorderThickness="0,0,0,1"
+            Height="65"
+            VerticalAlignment="Top">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- botão menu -->
+            <Button x:Name="BtnMenu"
+                    Click="ToggleMenu_Click"
+                    Style="{StaticResource MenuButtonStyle}"
+                    Padding="10,8"
+                    Height="40"
+                    Width="44"
+                    VerticalAlignment="Center"
+                    Margin="6,0">
+                <Image Source="{StaticResource MenuIcon}" Width="20"/>
+            </Button>
+
+            <Image Grid.Column="1"
+                   Source="/Assets/Images/Png/logo.png"
+                   Height="16"
+                   Width="120"
+                   Stretch="Uniform"
+                   VerticalAlignment="Center"/>
+
+            <!-- BUSCA -->
+            <Border Grid.Column="2"
+                    Width="260"
+                    Height="36"
+                    Background="#F5F5F5"
+                    BorderBrush="{DynamicResource InputBorderBrush}"
+                    BorderThickness="0.5"
+                    CornerRadius="16"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Path Grid.Column="0"
+                          Width="14"
+                          Height="14"
+                          Margin="12,0,8,0"
+                          VerticalAlignment="Center"
+                          Stroke="{DynamicResource PlaceholderBrush}"
+                          StrokeThickness="1"
+                          Fill="Transparent"
+                          Opacity="0.8"
+                          Data="M11 11 L16 16 M13 7 A6 6 0 1 1 1 7 A6 6 0 1 1 13 7"/>
+
+                    <TextBox Grid.Column="1"
+                             x:Name="SearchBox"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             VerticalContentAlignment="Center"
+                             FontSize="14"
+                             Foreground="{DynamicResource PlaceholderBrush}"
+                             Text="Buscar..."
+                             GotFocus="SearchBox_GotFocus"
+                             LostFocus="SearchBox_LostFocus"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="3"
+                  VerticalAlignment="Center"
+                  Margin="0,0,15,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Sino -->
+                <Viewbox Grid.Column="0"
+                         Width="22"
+                         Height="22"
+                         Margin="15,0,15,0"
+                         VerticalAlignment="Center">
+                    <Path Stroke="{DynamicResource PlaceholderBrush}"
+                          StrokeThickness="1.6"
+                          Fill="Transparent"
+                          Data="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                </Viewbox>
+
+                <!-- Usuário -->
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="0,0,15,0">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding UsuarioNome, FallbackValue=Usuário}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="#000000"/>
+                        <TextBlock Text="{Binding UsuarioPerfil, FallbackValue=Usuário}"
+                                   FontSize="11"
+                                   Foreground="#718096"
+                                   Margin="0,-2,0,0"/>
+                    </StackPanel>
+
+                    <Image Source="{StaticResource UserIcon}"
+                           Width="32"
+                           Height="32"
+                           Margin="8,0,8,0"
+                           VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,175 @@
+<UserControl x:Class="PDV.Views.Cadastros.FormaPagamentoListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:PDV.ViewModels.Cadastros"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:FormaPagamentoListViewModel}"
+             Background="#ECEFF1">
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="Insert" Command="{Binding NovoCommand}"/>
+        <KeyBinding Key="F9" Command="{Binding EditarCommand}"/>
+        <KeyBinding Key="F10" Command="{Binding ExcluirCommand}"/>
+    </UserControl.InputBindings>
+
+    <UserControl.Resources>
+        <Style x:Key="DataGridColumnStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F7FAFC"/>
+            <Setter Property="Foreground" Value="#4A5568"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#2D3748"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#EBF4FF"/>
+                    <Setter Property="Foreground" Value="#1C3E72"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="AddButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="#1C3E72"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="25" Width="50" Height="50">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2A52A0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Background="White" CornerRadius="12" Padding="20,14" Margin="20,20,20,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Background="Transparent" BorderThickness="0"
+                        Command="{Binding VoltarCommand}" Cursor="Hand" Margin="0,0,12,0" Padding="6,4">
+                    <TextBlock Text="← Voltar" FontSize="13" Foreground="#1C3E72" FontWeight="SemiBold"/>
+                </Button>
+                <TextBlock Grid.Column="1" Text="Relação - Formas de Pagamento"
+                           FontSize="18" FontWeight="SemiBold" Foreground="#1A202C" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- DATAGRID -->
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Margin="20,0,20,10">
+            <DataGrid ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F0F0F0"
+                      BorderThickness="0" Background="White" RowBackground="White"
+                      AlternatingRowBackground="#FAFAFA"
+                      ColumnHeaderStyle="{StaticResource DataGridColumnStyle}"
+                      CellStyle="{StaticResource DataGridCellStyle}"
+                      SelectionMode="Single" SelectionUnit="FullRow"
+                      HorizontalAlignment="Stretch"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto" Margin="0">
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="Insert" Command="{Binding NovoCommand}"/>
+                    <KeyBinding Key="F9" Command="{Binding EditarCommand}"/>
+                    <KeyBinding Key="F10" Command="{Binding ExcluirCommand}"/>
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditarCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                </DataGrid.InputBindings>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Id"              Binding="{Binding Id}"                  Width="55"/>
+                    <DataGridTextColumn Header="Código"          Binding="{Binding Codigo}"              Width="80"/>
+                    <DataGridTextColumn Header="Descrição"       Binding="{Binding Descricao}"           Width="200"/>
+                    <DataGridTextColumn Header="TEF"             Binding="{Binding Tef}"                 Width="70"/>
+                    <DataGridTextColumn Header="Tipo GP TEF"     Binding="{Binding TefTipoGp}"           Width="100"/>
+                    <DataGridTextColumn Header="Permite Troco"   Binding="{Binding PermiteTroco}"        Width="110"/>
+                    <DataGridTextColumn Header="Imprime Vinculado" Binding="{Binding ImprimeVinculado}"  Width="130"/>
+                    <DataGridTextColumn Header="Gera Parcelas"   Binding="{Binding GeraParcelas}"        Width="110"/>
+                    <DataGridTextColumn Header="Cód. NFC-e"      Binding="{Binding CodigoPagamentoNfce}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- RODAPÉ -->
+        <Grid Grid.Row="2" Margin="20,0,20,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Background="White" CornerRadius="10" Padding="16,8"
+                    HorizontalAlignment="Left" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Items.Count, StringFormat='Total: {0} registro(s)'}"
+                           FontSize="12" Foreground="#4A5568" VerticalAlignment="Center"/>
+            </Border>
+
+            <!-- PAGINAÇÃO -->
+            <Border Grid.Column="1" Background="White" CornerRadius="10"
+                    Padding="16,8" Margin="10,0" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Linhas por página:" FontSize="12" Foreground="#4A5568"
+                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <ComboBox Width="55" Height="28" FontSize="12" SelectedIndex="0"
+                              VerticalContentAlignment="Center" BorderBrush="#E2E8F0">
+                        <ComboBoxItem Content="10"/>
+                        <ComboBoxItem Content="25"/>
+                        <ComboBoxItem Content="50"/>
+                    </ComboBox>
+                    <Button Content="❮" Width="28" Height="28" Background="Transparent"
+                            BorderThickness="0" FontSize="14" Foreground="#4A5568" Cursor="Hand" Margin="8,0,0,0"/>
+                    <Button Content="❯" Width="28" Height="28" Background="Transparent"
+                            BorderThickness="0" FontSize="14" Foreground="#4A5568" Cursor="Hand"/>
+                </StackPanel>
+            </Border>
+
+            <!-- BOTÃO + -->
+            <Button Grid.Column="2" Style="{StaticResource DefaultButtonStyle}"
+                    Command="{Binding EditarCommand}" CommandParameter="{Binding SelectedItem}" Width="110" Height="40"
+                    Margin="0,0,10,0" VerticalAlignment="Center"
+                    ToolTip="Editar selecionado (F9)">
+                <TextBlock Text="Editar [F9]" FontSize="12" FontWeight="SemiBold"/>
+            </Button>
+
+            <Button Grid.Column="3" Style="{StaticResource DefaultButtonStyle}"
+                    Command="{Binding ExcluirCommand}" CommandParameter="{Binding SelectedItem}" Width="120" Height="40"
+                    Margin="0,0,10,0" VerticalAlignment="Center"
+                    ToolTip="Excluir selecionado (F10)">
+                <TextBlock Text="Excluir [F10]" FontSize="12" FontWeight="SemiBold"/>
+            </Button>
+
+            <Button Grid.Column="4" Style="{StaticResource AddButtonStyle}"
+                    Command="{Binding NovoCommand}" VerticalAlignment="Center" ToolTip="Nova Forma de Pagamento">
+                <TextBlock Text="+" FontSize="28" Margin="0,-2,0,0"/>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

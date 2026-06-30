@@ -1,0 +1,98 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Version>1.0.11</Version>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\Images\Png\techone-pdv.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Assets\Images\Svg\**" />
+    <Compile Remove="Assets\Images\Xaml\**" />
+    <Compile Remove="artifacts\**" />
+    <Compile Remove="Tools\**" />
+    <EmbeddedResource Remove="Assets\Images\Svg\**" />
+    <EmbeddedResource Remove="Assets\Images\Xaml\**" />
+    <EmbeddedResource Remove="artifacts\**" />
+    <EmbeddedResource Remove="Tools\**" />
+    <None Remove="Assets\Images\Svg\**" />
+    <None Remove="Assets\Images\Xaml\**" />
+    <None Remove="artifacts\**" />
+    <None Remove="Tools\**" />
+    <Page Remove="Assets\Images\Svg\**" />
+    <Page Remove="Assets\Images\Xaml\**" />
+    <Page Remove="artifacts\**" />
+    <Page Remove="Tools\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Images\bg_login.png" />
+    <None Remove="Assets\Images\Png\Circle_branco.png" />
+    <None Remove="Assets\Images\Png\logo.png" />
+    <None Remove="Assets\Images\Png\menubar.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\Png\logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\Png\bg_login.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Png\Circle_branco.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Utilities\Converters\BoolToVisibilityConverter.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="pdv.sqlite">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="pdv.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="HuskyInstall" AfterTargets="Restore" Condition="'$(HUSKY)' != '0'">
+    <Exec Command="dotnet tool restore" StandardOutputImportance="Low" StandardErrorImportance="High" />
+    <Exec Command="dotnet husky install" StandardOutputImportance="Low" StandardErrorImportance="High" ContinueOnError="true" />
+  </Target>
+
+  <Target Name="PublishPdvUpdater" BeforeTargets="Publish">
+    <MSBuild Projects="Tools\TechOne.PDV.Updater\TechOne.PDV.Updater.csproj"
+             Targets="Publish"
+             Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true;PublishSingleFile=true;PublishDir=$(MSBuildProjectDirectory)\artifacts\updater-publish\" />
+  </Target>
+
+  <Target Name="CopyPdvUpdaterToPublish" AfterTargets="Publish">
+    <ItemGroup>
+      <PdvUpdaterPublishFiles Include="$(MSBuildProjectDirectory)\artifacts\updater-publish\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PdvUpdaterPublishFiles)"
+          DestinationFiles="@(PdvUpdaterPublishFiles->'$(PublishDir)%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

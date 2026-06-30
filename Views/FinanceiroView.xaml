@@ -1,0 +1,171 @@
+﻿<UserControl x:Class="PDV.Views.FinanceiroView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PDV.Views"
+             mc:Ignorable="d"
+             Background="#ECEFF1">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- CARD TOPO -->
+        <Border Background="#ffffff"
+                CornerRadius="12"
+                Padding="25"
+                Margin="0,0,0,15">
+            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding VoltarCommand}"
+                        Cursor="Hand"
+                        Padding="6,4"
+                        VerticalAlignment="Top">
+                    <TextBlock Text="← Voltar"
+                                FontSize="13"
+                                Foreground="#1C3E72"
+                                FontWeight="SemiBold"/>
+                </Button>
+
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Módulo Financeiro"
+                               FontSize="22"
+                               FontWeight="SemiBold"
+                               Foreground="#000000"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Selecione uma opção para continuar"
+                               FontSize="11"
+                               Foreground="#999999"
+                               HorizontalAlignment="Center"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- GRUPO FINANCEIRO -->
+        <Border Grid.Row="1"
+                Background="#ffffff"
+                CornerRadius="12"
+                Padding="25"
+                Margin="0,0,0,15">
+            <StackPanel>
+
+                <!-- TÍTULO DO GRUPO -->
+                <Border Background="#1C3E72"
+                        CornerRadius="6"
+                        Padding="12,8"
+                        Margin="0,0,0,20">
+                    <TextBlock Text="Grupo Financeiro"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="#ffffff"
+                               HorizontalAlignment="Center"/>
+                </Border>
+
+                <!-- BOTÕES -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+
+                    <!-- CONTAS A PAGAR -->
+                    <StackPanel Width="130"
+                                Margin="20,0"
+                                HorizontalAlignment="Center"
+                                Cursor="Hand">
+                        <Button Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                HorizontalAlignment="Center"
+                                Click="BtnContasPagar_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="border"
+                                            Width="64"
+                                            Height="64"
+                                            CornerRadius="32"
+                                            Background="#1C3E72">
+                                        <TextBlock Text="$"
+                                                   FontSize="28"
+                                                   FontWeight="Bold"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border"
+                                                    Property="Background"
+                                                    Value="#2A52A0"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <TextBlock Text="Contas a Pagar"
+                                   FontSize="13"
+                                   Foreground="#2D3748"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,8,0,0"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- CONTAS A RECEBER -->
+                    <StackPanel Width="130"
+                                Margin="20,0"
+                                HorizontalAlignment="Center"
+                                Cursor="Hand">
+                        <Button Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                HorizontalAlignment="Center"
+                                Click="BtnContasReceber_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="border"
+                                            Width="64"
+                                            Height="64"
+                                            CornerRadius="32"
+                                            Background="#1C3E72">
+                                        <TextBlock Text="$"
+                                                   FontSize="28"
+                                                   FontWeight="Bold"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border"
+                                                    Property="Background"
+                                                    Value="#2A52A0"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <TextBlock Text="Contas a Receber"
+                                   FontSize="13"
+                                   Foreground="#2D3748"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,8,0,0"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</UserControl>

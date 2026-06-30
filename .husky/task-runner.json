@@ -1,0 +1,17 @@
+{
+   "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+   "tasks": [
+      {
+         "name": "build",
+         "group": "pre-commit",
+         "command": "dotnet",
+         "args": ["build", "PDV.csproj", "-c", "Release", "--nologo", "-v", "quiet"]
+      },
+      {
+         "name": "smoke",
+         "group": "pre-commit",
+         "command": "dotnet",
+         "args": ["run", "--project", "PDV.csproj", "-c", "Release", "--no-build", "--", "--smoke-flow"]
+      }
+   ]
+}
