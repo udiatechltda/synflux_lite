@@ -88,7 +88,7 @@ jobs:
         run: |
           cat > /tmp/update_appsettings.py << 'EOF'
           import json
-          path = '/opt/T2TiRetaguardaSH/appsettings.json'
+          path = '/opt/synflux/api/T2TiRetaguardaSH/appsettings.json'
           with open(path) as f:
               c = json.load(f)
           c['Updates']['Pdv'].update({
