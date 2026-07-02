@@ -435,7 +435,7 @@ namespace PDV.Services
                 ConsumidorOperacao = "1",
                 ConsumidorPresenca = "1",
                 ProcessoEmissao = "0",
-                VersaoProcessoEmissao = "TechOnePDV",
+                VersaoProcessoEmissao = "SynfluxPDV",
                 ValorTotalProdutos = venda.ValorTotalProdutos,
                 ValorDesconto = venda.ValorDesconto,
                 ValorTotal = venda.ValorFinal,
@@ -535,7 +535,7 @@ namespace PDV.Services
             Append(sb, "indFinal", "1");
             Append(sb, "indPres", "1");
             Append(sb, "procEmi", "0");
-            Append(sb, "verProc", "TechOnePDV");
+            Append(sb, "verProc", "SynfluxPDV");
             sb.AppendLine();
 
             sb.AppendLine("[Emitente]");

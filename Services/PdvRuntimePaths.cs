@@ -5,7 +5,7 @@ namespace PDV.Services
 {
     public static class PdvRuntimePaths
     {
-        public const string CompanyName = "TechOne";
+        public const string CompanyName = "Synflux";
         public const string ProductName = "PDV";
 
         public static string DataDirectory

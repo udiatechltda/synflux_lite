@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>Assets\Images\Png\techone-pdv.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\Images\Png\synflux-pdv.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -71,6 +71,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="pdv.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Images\Png\synflux-pdv.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

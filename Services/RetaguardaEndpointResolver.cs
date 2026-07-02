@@ -6,7 +6,7 @@ namespace PDV.Services
 {
     public static class RetaguardaEndpointResolver
     {
-        private const string DefaultUrl = "https://retaguardash.techone-it.com.br";
+        private const string DefaultUrl = "https://synflux.com.br";
 
         public static string ObterBaseUrl()
         {
