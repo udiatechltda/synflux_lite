@@ -67,7 +67,7 @@ namespace PDV.Services.Diagnostics
                 if (conta == null)
                     throw new InvalidOperationException("Nao foi possivel criar a conta pendente na retaguarda.");
 
-                var mainWindow = new MainWindow(auth, alerts, tenant, cashSessionState)
+                var mainWindow = new MainWindow(auth, alerts, tenant, cashSessionState, provider.GetRequiredService<IRetaguardaSyncCoordinator>())
                 {
                     WindowState = WindowState.Maximized,
                     Topmost = true

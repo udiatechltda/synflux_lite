@@ -11,28 +11,30 @@ namespace PDV
         private readonly IAuthenticationService _authenticationService;
         private readonly ILocalTenantService _localTenantService;
         private readonly PdvCashSessionState _cashSessionState;
+        private readonly IRetaguardaSyncCoordinator _syncCoordinator;
         public IAlertService AlertService { get; }
 
         public MainWindow(
             IAuthenticationService authenticationService,
             IAlertService alertService,
             ILocalTenantService localTenantService,
-            PdvCashSessionState cashSessionState)
+            PdvCashSessionState cashSessionState,
+            IRetaguardaSyncCoordinator syncCoordinator)
         {
             _authenticationService = authenticationService;
             _localTenantService = localTenantService;
             _cashSessionState = cashSessionState;
+            _syncCoordinator = syncCoordinator;
             AlertService = alertService;
             InitializeComponent();
 
-            // Definir o DataContext para binding
             DataContext = this;
             NavigateToLogin();
         }
 
         public void NavigateToLogin()
         {
-            MainContent.Content = new LoginView(_authenticationService, AlertService, _localTenantService);
+            MainContent.Content = new LoginView(_authenticationService, AlertService, _localTenantService, _syncCoordinator);
         }
 
         public void NavigateToCadastroInicial()

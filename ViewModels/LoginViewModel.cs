@@ -69,11 +69,14 @@ namespace PDV.ViewModels
 
         public ICommand LoginCommand { get; }
 
-        public LoginViewModel(IAuthenticationService authenticationService, IAlertService alertService, ILocalTenantService localTenantService)
+        private readonly IRetaguardaSyncCoordinator _syncCoordinator;
+
+        public LoginViewModel(IAuthenticationService authenticationService, IAlertService alertService, ILocalTenantService localTenantService, IRetaguardaSyncCoordinator syncCoordinator)
         {
             _authenticationService = authenticationService;
             _alertService = alertService;
             _localTenantService = localTenantService;
+            _syncCoordinator = syncCoordinator;
             LoginCommand = new AsyncRelayCommand(ExecuteLoginAsync, CanExecuteLogin);
         }
 
@@ -161,6 +164,7 @@ namespace PDV.ViewModels
                     }
 
                     _localTenantService.GarantirTenantLocal(session);
+                    _syncCoordinator.NotificarLoginRealizado();
                     await FinalizarLoginAsync();
                 }
                 else

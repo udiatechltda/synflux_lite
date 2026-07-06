@@ -11,6 +11,7 @@ namespace PDV.Services
 {
     public sealed class RetaguardaSyncCoordinator : IRetaguardaSyncCoordinator, IDisposable
     {
+        public event Action? OnRestoreCompleto;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILocalDatabaseService _databaseService;
         private readonly SemaphoreSlim _syncLock = new(1, 1);
@@ -75,6 +76,18 @@ namespace PDV.Services
 
             if (SincronizacaoPendente)
                 AgendarTentativa("startup");
+        }
+
+        public void NotificarLoginRealizado()
+        {
+            lock (_stateLock)
+                _restoreConcluido = false;
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+                await RestaurarDoServidorInternoAsync().ConfigureAwait(false);
+            });
         }
 
         public void SolicitarSincronizacao(string origem)
@@ -185,6 +198,8 @@ namespace PDV.Services
                 {
                     lock (_stateLock)
                         _restoreConcluido = true;
+
+                    OnRestoreCompleto?.Invoke();
                 }
             }
             catch

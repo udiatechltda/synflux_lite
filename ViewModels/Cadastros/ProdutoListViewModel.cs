@@ -12,13 +12,14 @@ namespace PDV.ViewModels.Cadastros
     {
         private readonly IProdutoImagemService? _produtoImagemService;
 
-        public ProdutoListViewModel() : this(null, null, null) { }
-        public ProdutoListViewModel(IViewModelNavigationService? navigationService) : this(navigationService, null, null) { }
+        public ProdutoListViewModel() : this(null, null, null, null) { }
+        public ProdutoListViewModel(IViewModelNavigationService? navigationService) : this(navigationService, null, null, null) { }
         public ProdutoListViewModel(
             IViewModelNavigationService? navigationService,
             PdvContext? context,
-            IProdutoImagemService? produtoImagemService = null)
-            : base(navigationService ?? new PDV.Services.ViewModelNavigationService(), context)
+            IProdutoImagemService? produtoImagemService = null,
+            IRetaguardaSyncCoordinator? syncCoordinator = null)
+            : base(navigationService ?? new PDV.Services.ViewModelNavigationService(), context, syncCoordinator)
         {
             _produtoImagemService = produtoImagemService;
         }

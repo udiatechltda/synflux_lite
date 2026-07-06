@@ -155,7 +155,12 @@ namespace PDV
             services.AddTransient<PDV.ViewModels.Cadastros.EmpresaListViewModel>();
             services.AddTransient<PDV.ViewModels.Cadastros.FormaPagamentoListViewModel>();
             services.AddTransient<PDV.ViewModels.Cadastros.UnidadeListViewModel>();
-            services.AddTransient<PDV.ViewModels.Cadastros.ProdutoListViewModel>();
+            services.AddTransient<PDV.ViewModels.Cadastros.ProdutoListViewModel>(p =>
+                new PDV.ViewModels.Cadastros.ProdutoListViewModel(
+                    p.GetRequiredService<IViewModelNavigationService>(),
+                    p.GetRequiredService<PdvContext>(),
+                    p.GetService<IProdutoImagemService>(),
+                    p.GetRequiredService<IRetaguardaSyncCoordinator>()));
 
             // Cadastros - Formul�rios
             services.AddTransient<ClienteFormViewModel>();

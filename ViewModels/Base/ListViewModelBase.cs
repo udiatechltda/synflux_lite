@@ -12,6 +12,7 @@ namespace PDV.ViewModels.Base
     {
         protected readonly IViewModelNavigationService _navigationService;
         protected PdvContext? _context;
+        private readonly IRetaguardaSyncCoordinator? _syncCoordinator;
         private ObservableCollection<T> _items;
         private T _selectedItem;
         private string _searchText;
@@ -43,10 +44,11 @@ namespace PDV.ViewModels.Base
         public ICommand ExcluirCommand { get; }
         public ICommand VoltarCommand { get; }
 
-        protected ListViewModelBase(IViewModelNavigationService navigationService, PdvContext? context = null)
+        protected ListViewModelBase(IViewModelNavigationService navigationService, PdvContext? context = null, IRetaguardaSyncCoordinator? syncCoordinator = null)
         {
             _navigationService = navigationService;
             _context = context;
+            _syncCoordinator = syncCoordinator;
             Items = new ObservableCollection<T>();
             NovoCommand = new RelayCommand<object>(ExecuteNovo);
             EditarCommand = new RelayCommand<object>(ExecuteEditar);
@@ -55,7 +57,15 @@ namespace PDV.ViewModels.Base
 
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
 
+            if (_syncCoordinator != null)
+                _syncCoordinator.OnRestoreCompleto += OnRestoreCompleto;
+
             LoadData();
+        }
+
+        private void OnRestoreCompleto()
+        {
+            Application.Current?.Dispatcher.Invoke(LoadData);
         }
 
         protected virtual void ExecuteVoltar(object parameter)

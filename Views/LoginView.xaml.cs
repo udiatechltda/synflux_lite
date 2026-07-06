@@ -11,15 +11,16 @@ namespace PDV.Views
         private readonly IAuthenticationService _authenticationService;
         private readonly IAlertService _alertService;
         private readonly ILocalTenantService _localTenantService;
+        private readonly IRetaguardaSyncCoordinator _syncCoordinator;
 
-        // Construtor atualizado para receber IAlertService
-        public LoginView(IAuthenticationService authenticationService, IAlertService alertService, ILocalTenantService localTenantService)
+        public LoginView(IAuthenticationService authenticationService, IAlertService alertService, ILocalTenantService localTenantService, IRetaguardaSyncCoordinator syncCoordinator)
         {
             _authenticationService = authenticationService;
             _alertService = alertService;
             _localTenantService = localTenantService;
+            _syncCoordinator = syncCoordinator;
             InitializeComponent();
-            DataContext = new LoginViewModel(authenticationService, alertService, localTenantService);
+            DataContext = new LoginViewModel(authenticationService, alertService, localTenantService, syncCoordinator);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
