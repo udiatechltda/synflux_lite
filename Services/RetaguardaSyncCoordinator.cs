@@ -23,6 +23,7 @@ namespace PDV.Services
         private bool _started;
         private bool _disposed;
         private bool _attemptScheduled;
+        private bool _restoreConcluido;
 
         public RetaguardaSyncCoordinator(IServiceScopeFactory scopeFactory, ILocalDatabaseService databaseService)
         {
@@ -54,7 +55,17 @@ namespace PDV.Services
             }
 
             NetworkChange.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
-            _timer = new Timer(_ => _ = TentarSincronizarPendenteAsync("timer"), null, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30));
+            _timer = new Timer(_ =>
+            {
+                bool restorePendente;
+                lock (_stateLock)
+                    restorePendente = !_restoreConcluido;
+
+                if (restorePendente)
+                    _ = RestaurarDoServidorInternoAsync();
+                else
+                    _ = TentarSincronizarPendenteAsync("timer");
+            }, null, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30));
 
             _ = Task.Run(async () =>
             {
@@ -83,8 +94,17 @@ namespace PDV.Services
 
         private void OnNetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
-            if (e.IsAvailable)
-                AgendarTentativa("network-available");
+            if (!e.IsAvailable)
+                return;
+
+            bool restorePendente;
+            lock (_stateLock)
+                restorePendente = !_restoreConcluido;
+
+            if (restorePendente)
+                _ = Task.Run(() => RestaurarDoServidorInternoAsync());
+
+            AgendarTentativa("network-available");
         }
 
         private bool EstaAtivo()
@@ -143,18 +163,37 @@ namespace PDV.Services
             if (!EstaAtivo())
                 return;
 
+            lock (_stateLock)
+            {
+                if (_restoreConcluido)
+                    return;
+            }
+
             if (!NetworkInterface.GetIsNetworkAvailable())
+                return;
+
+            if (!await _syncLock.WaitAsync(0).ConfigureAwait(false))
                 return;
 
             try
             {
                 using var scope = _scopeFactory.CreateScope();
                 var syncService = scope.ServiceProvider.GetRequiredService<IRetaguardaSyncService>();
-                await syncService.RestaurarDoServidorAsync().ConfigureAwait(false);
+                var resultado = await syncService.RestaurarDoServidorAsync().ConfigureAwait(false);
+
+                if (resultado.Sincronizado)
+                {
+                    lock (_stateLock)
+                        _restoreConcluido = true;
+                }
             }
             catch
             {
-                // falha no restore nao deve parar o app
+                // falha no restore nao deve parar o app; sera tentado novamente no proximo tick
+            }
+            finally
+            {
+                _syncLock.Release();
             }
         }
 
