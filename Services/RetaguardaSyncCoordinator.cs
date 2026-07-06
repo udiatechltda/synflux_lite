@@ -30,7 +30,7 @@ namespace PDV.Services
             _databaseService = databaseService;
 
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            _syncStatePath = Path.Combine(appDataPath, "TechOnePDV");
+            _syncStatePath = Path.Combine(appDataPath, "SynfluxPDV");
             Directory.CreateDirectory(_syncStatePath);
         }
 
@@ -55,6 +55,12 @@ namespace PDV.Services
 
             NetworkChange.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
             _timer = new Timer(_ => _ = TentarSincronizarPendenteAsync("timer"), null, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30));
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(3)).ConfigureAwait(false);
+                await RestaurarDoServidorInternoAsync().ConfigureAwait(false);
+            });
 
             if (SincronizacaoPendente)
                 AgendarTentativa("startup");
@@ -130,6 +136,26 @@ namespace PDV.Services
 
                 await TentarSincronizarPendenteAsync(origem).ConfigureAwait(false);
             });
+        }
+
+        private async Task RestaurarDoServidorInternoAsync()
+        {
+            if (!EstaAtivo())
+                return;
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                return;
+
+            try
+            {
+                using var scope = _scopeFactory.CreateScope();
+                var syncService = scope.ServiceProvider.GetRequiredService<IRetaguardaSyncService>();
+                await syncService.RestaurarDoServidorAsync().ConfigureAwait(false);
+            }
+            catch
+            {
+                // falha no restore nao deve parar o app
+            }
         }
 
         private async Task<RetaguardaSyncResult> TentarSincronizarPendenteAsync(string origem)

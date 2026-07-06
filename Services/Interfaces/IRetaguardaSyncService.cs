@@ -5,6 +5,7 @@ namespace PDV.Services.Interfaces
     public interface IRetaguardaSyncService
     {
         Task<RetaguardaSyncResult> SincronizarTudoAsync();
+        Task<RetaguardaSyncResult> RestaurarDoServidorAsync();
     }
 
     public sealed class RetaguardaSyncResult

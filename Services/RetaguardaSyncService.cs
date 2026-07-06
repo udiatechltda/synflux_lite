@@ -78,6 +78,136 @@ namespace PDV.Services
             };
         }
 
+        public async Task<RetaguardaSyncResult> RestaurarDoServidorAsync()
+        {
+            if (_authenticationService is not AuthenticationService auth || auth.CurrentSession == null)
+            {
+                return new RetaguardaSyncResult
+                {
+                    Sincronizado = false,
+                    Mensagem = "Sem sessao autenticada da retaguarda."
+                };
+            }
+
+            _localTenantService.GarantirTenantLocal(auth.CurrentSession);
+            using var httpClient = CriarHttpClient(auth.CurrentSession.Token);
+            var response = await httpClient.GetAsync("sincroniza/pdv/restore").ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erro = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return new RetaguardaSyncResult
+                {
+                    Sincronizado = false,
+                    Mensagem = $"Falha ao restaurar do servidor: {(int)response.StatusCode} {erro}"
+                };
+            }
+
+            var retorno = await response.Content.ReadFromJsonAsync<PdvRestoreResponse>(JsonOptions).ConfigureAwait(false);
+            if (retorno == null || retorno.Tabelas == null || retorno.Tabelas.Count == 0)
+            {
+                return new RetaguardaSyncResult
+                {
+                    Sincronizado = true,
+                    Mensagem = "Nenhum dado no servidor para restaurar."
+                };
+            }
+
+            await AplicarRestoreLocalAsync(retorno).ConfigureAwait(false);
+
+            return new RetaguardaSyncResult
+            {
+                Sincronizado = true,
+                Mensagem = $"Restaurado do servidor: {retorno.TotalTabelas} tabela(s), {retorno.TotalRegistros} registro(s).",
+                BancoOperacional = retorno.BancoOperacional,
+                TotalTabelas = retorno.TotalTabelas,
+                TotalRegistros = retorno.TotalRegistros
+            };
+        }
+
+        private async Task AplicarRestoreLocalAsync(PdvRestoreResponse retorno)
+        {
+            var connection = _context.Database.GetDbConnection();
+            var deveFechar = connection.State != System.Data.ConnectionState.Open;
+            if (deveFechar)
+                connection.Open();
+
+            try
+            {
+                foreach (var tabela in retorno.Tabelas)
+                {
+                    foreach (var registro in tabela.Registros)
+                    {
+                        if (string.IsNullOrWhiteSpace(registro.DadosJson))
+                            continue;
+
+                        try
+                        {
+                            await AplicarRegistroSqliteAsync(connection, tabela.Nome, registro.DadosJson).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            // falha em registro individual nao interrompe o restore
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (deveFechar)
+                    connection.Close();
+            }
+        }
+
+        private static async Task AplicarRegistroSqliteAsync(System.Data.Common.DbConnection connection, string tableName, string dadosJson)
+        {
+            using var doc = JsonDocument.Parse(dadosJson);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return;
+
+            var colunas = new List<string>();
+            var valores = new List<object?>();
+
+            foreach (var prop in doc.RootElement.EnumerateObject())
+            {
+                colunas.Add(prop.Name);
+                valores.Add(ExtrairValorJson(prop.Value));
+            }
+
+            if (colunas.Count == 0)
+                return;
+
+            var colunasEsc = string.Join(", ", colunas.Select(c => $"\"{EscaparIdentificadorSqlite(c)}\""));
+            var placeholders = string.Join(", ", colunas.Select((_, i) => $"@rv{i}"));
+            var sql = $"INSERT OR REPLACE INTO \"{EscaparIdentificadorSqlite(tableName)}\" ({colunasEsc}) VALUES ({placeholders})";
+
+            using var command = connection.CreateCommand();
+            command.CommandText = sql;
+            for (var i = 0; i < colunas.Count; i++)
+            {
+                var param = command.CreateParameter();
+                param.ParameterName = $"@rv{i}";
+                param.Value = valores[i] ?? DBNull.Value;
+                command.Parameters.Add(param);
+            }
+
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
+
+        private static object? ExtrairValorJson(JsonElement value)
+        {
+            return value.ValueKind switch
+            {
+                JsonValueKind.Null or JsonValueKind.Undefined => null,
+                JsonValueKind.True => 1,
+                JsonValueKind.False => 0,
+                JsonValueKind.Number when value.TryGetInt64(out var l) => l,
+                JsonValueKind.Number when value.TryGetDouble(out var d) => d,
+                JsonValueKind.String => value.GetString(),
+                _ => value.GetRawText()
+            };
+        }
+
         private PdvSnapshotRequest CriarSnapshot()
         {
             var snapshot = new PdvSnapshotRequest

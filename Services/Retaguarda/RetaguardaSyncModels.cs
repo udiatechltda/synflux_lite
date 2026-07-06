@@ -46,6 +46,27 @@ namespace PDV.Services.Retaguarda
         public int TotalRegistros { get; set; }
     }
 
+    public sealed class PdvRestoreResponse
+    {
+        [JsonPropertyName("cnpj")]
+        public string Cnpj { get; set; } = string.Empty;
+
+        [JsonPropertyName("bancoOperacional")]
+        public string BancoOperacional { get; set; } = string.Empty;
+
+        [JsonPropertyName("totalTabelas")]
+        public int TotalTabelas { get; set; }
+
+        [JsonPropertyName("totalRegistros")]
+        public int TotalRegistros { get; set; }
+
+        [JsonPropertyName("restauradoEm")]
+        public DateTime RestauradoEm { get; set; }
+
+        [JsonPropertyName("tabelas")]
+        public List<PdvSnapshotTable> Tabelas { get; set; } = new();
+    }
+
     public sealed class ProdutoImagemManifestResponse
     {
         [JsonPropertyName("cnpj")]
