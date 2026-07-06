@@ -43,7 +43,7 @@ jobs:
         run: dotnet publish Tools/TechOne.PDV.Updater/TechOne.PDV.Updater.csproj -c Release -r win-x64 -p:SelfContained=true -p:PublishSingleFile=true -o artifacts/updater-publish/
 
       - name: Publicar PDV (win-x64, self-contained)
-        run: dotnet publish PDV.csproj -c Release -r win-x64 --self-contained true -o publish/
+        run: dotnet publish PDV.csproj -c Release -r win-x64 --self-contained true -p:Version=${{ steps.meta.outputs.VERSION }} -o publish/
 
       - name: Criar pacote ZIP
         run: Compress-Archive -Path publish/* -DestinationPath "${{ steps.meta.outputs.ZIP_NAME }}"
