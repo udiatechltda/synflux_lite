@@ -225,8 +225,53 @@ namespace PDV
 
             PdvRuntimePaths.EnsureDataDirectory();
             var installedDatabasePath = PdvRuntimePaths.LoginDatabasePath;
+            MigrarDadosLegadosSeNecessario();
             SeedInstalledDatabaseIfNeeded(installedDatabasePath);
             return installedDatabasePath;
+        }
+
+        private static void MigrarDadosLegadosSeNecessario()
+        {
+            var destino = PdvRuntimePaths.DataDirectory;
+
+            // Ja tem dados no novo path — nada a migrar
+            if (Directory.Exists(destino) && Directory.GetFileSystemEntries(destino).Length > 0)
+                return;
+
+            var legadoBase = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                "TechOne", "PDV");
+
+            if (!Directory.Exists(legadoBase))
+                return;
+
+            try
+            {
+                CopiarDiretorioRecursivo(legadoBase, destino);
+            }
+            catch
+            {
+                // Falha silenciosa: o restore do servidor cobre o caso
+            }
+        }
+
+        private static void CopiarDiretorioRecursivo(string origem, string destino)
+        {
+            Directory.CreateDirectory(destino);
+
+            foreach (var arquivo in Directory.GetFiles(origem))
+            {
+                var nomeArquivo = Path.GetFileName(arquivo);
+                var destinoArquivo = Path.Combine(destino, nomeArquivo);
+                if (!File.Exists(destinoArquivo))
+                    File.Copy(arquivo, destinoArquivo);
+            }
+
+            foreach (var subdir in Directory.GetDirectories(origem))
+            {
+                var nomeSubdir = Path.GetFileName(subdir);
+                CopiarDiretorioRecursivo(subdir, Path.Combine(destino, nomeSubdir));
+            }
         }
 
         private static void SeedInstalledDatabaseIfNeeded(string installedDatabasePath)
