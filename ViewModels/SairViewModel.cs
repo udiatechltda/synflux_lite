@@ -49,10 +49,7 @@ namespace PDV.ViewModels
                 MessageBoxResult.No);
 
             if (result == MessageBoxResult.Yes)
-            {
-                _updateLauncher?.TryLaunchOnExit(_cashSessionState?.HasOpenCash ?? false);
                 Application.Current.Shutdown();
-            }
         }
 
         private void ExecuteCancelar()

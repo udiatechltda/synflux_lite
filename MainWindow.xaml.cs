@@ -12,6 +12,7 @@ namespace PDV
         private readonly ILocalTenantService _localTenantService;
         private readonly PdvCashSessionState _cashSessionState;
         private readonly IRetaguardaSyncCoordinator _syncCoordinator;
+        private readonly IPdvUpdateLauncher _updateLauncher;
         public IAlertService AlertService { get; }
 
         public MainWindow(
@@ -19,12 +20,14 @@ namespace PDV
             IAlertService alertService,
             ILocalTenantService localTenantService,
             PdvCashSessionState cashSessionState,
-            IRetaguardaSyncCoordinator syncCoordinator)
+            IRetaguardaSyncCoordinator syncCoordinator,
+            IPdvUpdateLauncher updateLauncher)
         {
             _authenticationService = authenticationService;
             _localTenantService = localTenantService;
             _cashSessionState = cashSessionState;
             _syncCoordinator = syncCoordinator;
+            _updateLauncher = updateLauncher;
             AlertService = alertService;
             InitializeComponent();
 
@@ -94,6 +97,12 @@ namespace PDV
 
             if (result != MessageBoxResult.Yes)
                 e.Cancel = true;
+        }
+
+        protected override void OnClosed(System.EventArgs e)
+        {
+            base.OnClosed(e);
+            _updateLauncher.TryLaunchOnExit(_cashSessionState.HasOpenCash);
         }
 
     }
