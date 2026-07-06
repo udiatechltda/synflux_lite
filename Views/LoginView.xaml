@@ -10,16 +10,315 @@
              d:DesignWidth="1024"
              d:DesignHeight="600"
              Loaded="UserControl_Loaded">
-    <Grid Background="{StaticResource BackgroundDefaulBrush}">
 
-        <Grid x:Name="MainContent" Background="{StaticResource BackgroundDefaulBrush}">
+    <Grid Background="{StaticResource BackgroundDefaulBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+
+
+        <Grid x:Name="MainContent" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="1.1*" />
+                <ColumnDefinition Width="0.9*" />
             </Grid.ColumnDefinitions>
 
+            <!-- Painel Esquerda -->
+            <Grid Grid.Column="0" Margin="80,60,40,60">
+                <Grid Grid.Column="0">
+                    <StackPanel>
+                        <!-- Logo -->
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,60">
+                            <Border Width="76" Height="76" CornerRadius="12" Background="#001B5B">
+                                <TextBlock Text="S" Foreground="White" FontSize="42" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="SYNFLUX" FontSize="24" FontWeight="Bold" Foreground="#24324B"/>
+                                <TextBlock Text="ERP Lite" FontSize="14" Foreground="#6B7A99"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <!-- Título -->
+                        <TextBlock Text="Gestão simples," FontSize="48" FontWeight="Bold" Foreground="#24324B"/>
+                        <TextBlock Text="resultados reais." FontSize="48" FontWeight="Bold" Foreground="#24324B" Margin="0,-5,0,0"/>
+                        <TextBlock Text="Organize sua empresa com mais controle e praticidade." FontSize="22" Foreground="#718096" Margin="0,25,0,50"/>
+                        <!-- Ilustração -->
+
+                        <Image Source="/Assets/Images/Png/bg_login.png" Stretch="Uniform" Height="450"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </Grid>
+
+
+            <!-- Painel Direita -->
+            <Grid Grid.Column="1" Margin="40">
+
+                <Border Width="560"
+            Padding="50"
+            Background="White"
+            CornerRadius="16"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center">
+
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="25"
+                              ShadowDepth="0"
+                              Opacity="0.08"/>
+                    </Border.Effect>
+
+                    <StackPanel>
+
+                        <!-- Título -->
+
+                        <TextBlock Text="Acesse sua conta"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="#24324B"/>
+
+                        <TextBlock Text="Entre para continuar."
+                       FontSize="16"
+                       Foreground="#718096"
+                       Margin="0,12,0,35"/>
+
+                        <!-- EMAIL -->
+
+                        <TextBlock Text="E-mail"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,8"
+                       Foreground="#24324B"/>
+
+                        <Border Height="50"
+                    BorderThickness="1"
+                    BorderBrush="#D8E1EE"
+                    CornerRadius="8">
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="45"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                               Text="✉"
+                               FontSize="16"
+                               Foreground="#94A3B8"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
+                                <TextBox Grid.Column="1"
+                             x:Name="UsuarioInput"
+                             Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             FontSize="15"
+                             VerticalContentAlignment="Center"
+                             Foreground="#24324B"
+                             KeyDown="UsuarioInput_KeyDown"/>
+                            </Grid>
+
+                        </Border>
+
+                        <!-- SENHA -->
+
+                        <TextBlock Text="Senha"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Margin="0,20,0,8"
+                       Foreground="#24324B"/>
+
+                        <Border Height="50"
+                    BorderThickness="1"
+                    BorderBrush="#D8E1EE"
+                    CornerRadius="8">
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="45"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="45"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                               Text="🔒"
+                               FontSize="16"
+                               Foreground="#94A3B8"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
+                                <PasswordBox Grid.Column="1"
+                                 x:Name="PasswordInput"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 FontSize="15"
+                                 Foreground="#24324B"
+                                 VerticalContentAlignment="Center"
+                                 PasswordChanged="PasswordBox_PasswordChanged"
+                                 KeyDown="PasswordInput_KeyDown"/>
+
+                                <TextBlock Grid.Column="2"
+                               Text="👁"
+                               FontSize="16"
+                               Foreground="#94A3B8"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                            </Grid>
+
+                        </Border>
+
+                        <!-- ESQUECEU SENHA -->
+
+                        <TextBlock Text="Esqueceu sua senha?"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Foreground="#002D72"
+                       HorizontalAlignment="Right"
+                       Margin="0,20,0,30"
+                       Cursor="Hand"
+                       MouseLeftButtonUp="EsqueceuSenha_Click"/>
+
+                        <!-- BOTÃO ENTRAR -->
+
+                        <Button Height="52"
+                    Command="{Binding LoginCommand}"
+                    behaviors:ButtonLoading.IsEnabled="True"
+                    IsEnabled="{Binding IsNotLoading}"
+                    BorderThickness="0"
+                    Cursor="Hand">
+
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+
+                                    <Border x:Name="border"
+                                Background="#001B5B"
+                                CornerRadius="12">
+
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+
+                                        <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                            <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#002A80"/>
+                                        </Trigger>
+
+                                        <Trigger Property="IsEnabled"
+                                     Value="False">
+                                            <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#A0AEC0"/>
+                                        </Trigger>
+
+                                    </ControlTemplate.Triggers>
+
+                                </ControlTemplate>
+                            </Button.Template>
+
+                            <StackPanel Orientation="Horizontal">
+
+                                <TextBlock Text="➜"
+                               Foreground="White"
+                               FontSize="16"
+                               Margin="0,0,10,0"/>
+
+                                <TextBlock Text="Entrar"
+                               Foreground="White"
+                               FontWeight="SemiBold"
+                               FontSize="16"/>
+
+                            </StackPanel>
+
+                        </Button>
+
+                        <!-- DIVISOR -->
+
+                        <Grid Margin="0,30">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                        Height="1"
+                        Background="#E2E8F0"
+                        VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Column="1"
+                           Text="ou"
+                           Foreground="#94A3B8"
+                           HorizontalAlignment="Center"/>
+
+                            <Border Grid.Column="2"
+                        Height="1"
+                        Background="#E2E8F0"
+                        VerticalAlignment="Center"/>
+
+                        </Grid>
+
+                        <!-- CRIAR CONTA -->
+
+                        <Button Height="52"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="Cadastrar_Click">
+
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+
+                                    <Border x:Name="border"
+                                Background="White"
+                                BorderBrush="#D8E1EE"
+                                BorderThickness="1"
+                                CornerRadius="12">
+
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+
+                                        <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                            <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#F8FAFC"/>
+                                        </Trigger>
+
+                                    </ControlTemplate.Triggers>
+
+                                </ControlTemplate>
+                            </Button.Template>
+
+                            <TextBlock Text="Criar conta"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="#24324B"/>
+
+                        </Button>
+
+                    </StackPanel>
+
+                </Border>
+
+            </Grid>
+
+
             <!-- Painel Azul com Título -->
-            <Grid Grid.Column="0">
+            <!--<Grid Grid.Column="0">
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                         <GradientStop Color="#1DB8FF" Offset="0"/>
@@ -34,10 +333,10 @@
                     <TextBlock Text="Sistema PDV" FontSize="35" FontWeight="Bold" Foreground="White" Margin="0,20,0,0"/>
                     <TextBlock Text="Para gerenciar seu negócio" FontSize="16" Foreground="White" />
                 </StackPanel>
-            </Grid>
+            </Grid>-->
 
             <!-- Painel Branco para Login -->
-            <Grid Grid.Column="1">
+            <!--<Grid Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="24*"/>
@@ -54,7 +353,9 @@
                         <TextBlock Text="Conecte-se" FontSize="28" FontWeight="SemiBold" Foreground="#1A202C" Margin="0,0,0,6" HorizontalAlignment="Center"/>
                         <TextBlock Text="PDV - Acesso ao Sistema" FontSize="13" Foreground="#999999" HorizontalAlignment="Center" Margin="0,0,0,34"/>
 
-                        <!-- Campo E-mail -->
+                        -->
+            <!-- Campo E-mail -->
+            <!--
                         <TextBlock Text="E-mail" FontSize="13" Foreground="#8A94A6" Margin="0,0,0,6"/>
                         <Border CornerRadius="8" BorderThickness="1" BorderBrush="#D0D5DD" Background="White" Height="48" Margin="0,0,0,18">
                             <TextBox x:Name="UsuarioInput"
@@ -68,7 +369,9 @@
                                      KeyDown="UsuarioInput_KeyDown"/>
                         </Border>
 
-                        <!-- Campo Senha -->
+                        -->
+            <!-- Campo Senha -->
+            <!--
                         <TextBlock Text="Senha" FontSize="13" Foreground="#8A94A6" Margin="0,0,0,6"/>
                         <Border CornerRadius="8" BorderThickness="1" BorderBrush="#D0D5DD" Background="White" Height="48" Margin="0,0,0,8">
                             <PasswordBox x:Name="PasswordInput"
@@ -82,7 +385,9 @@
                                          KeyDown="PasswordInput_KeyDown"/>
                         </Border>
 
-                        <!-- Link Esqueci a senha -->
+                        -->
+            <!-- Link Esqueci a senha -->
+            <!--
                         <TextBlock Text="Esqueceu sua senha?" 
                                FontSize="13"
                                Foreground="#1C3E72" 
@@ -161,10 +466,47 @@
                         </Button>
                     </StackPanel>
                 </Border>
-            </Grid>
+            </Grid>-->
 
         </Grid>
-        <local:LoadingView x:Name="LoadingOverlay" 
-                          Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}" Loaded="LoadingOverlay_Loaded"/>
+
+        <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Background="{StaticResource BackgroundWhiteBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Margin="20,0" VerticalAlignment="Center">
+
+                    <Ellipse Width="8" Height="8" Fill="{StaticResource SuccessBrush}"/>
+
+                    <TextBlock Text="Online" Margin="6,0" Foreground="{StaticResource TextSecondaryBrush}" FontFamily="Inter" FontSize="12" Height="12" RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform AngleX="0.367"/>
+                                <RotateTransform/>
+                                <TranslateTransform X="0.035"/>
+                            </TransformGroup>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                    <TextBlock Text="v1.0.0" Margin="24,0" Foreground="{StaticResource TextTertiaryBrush}" FontFamily="Inter" FontSize="12" Height="12"/>
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Text="© 2026 Synflux. Todos os direitos reservados." HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextTertiaryBrush}" FontFamily="Inter" FontSize="14"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
+
+                    <TextBlock Text="Suporte"
+                   Margin="0,0,20,0"/>
+
+                    <TextBlock Text="Configurações"/>
+                </StackPanel>
+
+            </Grid>
+        </Border>
+        <!--<local:LoadingView x:Name="LoadingOverlay" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}" Loaded="LoadingOverlay_Loaded"/>-->
     </Grid>
 </UserControl>

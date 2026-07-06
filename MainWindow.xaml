@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:PDV.Views"
         mc:Ignorable="d"
-        Title="Sistema PDV" 
+        Title="SynFlux Lite" 
         WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         MinWidth="1024"
         MinHeight="600">
 

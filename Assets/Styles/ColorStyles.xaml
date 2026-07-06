@@ -8,12 +8,21 @@
     <Color x:Key="PrimaryDarkerColor">#1565C0</Color>
 
     <!-- Cores de fundo -->
-    <Color x:Key="BackgroundDefaultColor">#F8FAFD</Color>
+    <Color x:Key="BackgroundDefaultColor">#F3F6FA</Color>
+    <Color x:Key="BackgroundWhiteColor">#FFFFFF</Color>
 
     <!-- Cores texto -->
     <Color x:Key="TitleColor">#1C3E72</Color>
     <Color x:Key="PlaceholderColor">#999999</Color>
     <Color x:Key="InputBorderColor">#808080</Color>
+    <Color x:Key="TextSecondaryColor">#64748B</Color>
+    <Color x:Key="TextTertiaryColor">#94A3B8</Color>
+
+    <!-- Cores borda -->
+    <Color x:Key="BorderColor">#E2E8F0</Color>
+
+    <!-- Cores de status -->
+    <Color x:Key="SuccessColor">#28C840</Color>
 
     <!-- Definindo brushes (pincéis) a partir das cores -->
     <SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource PrimaryLightColor}" />
@@ -21,8 +30,13 @@
     <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDarkColor}" />
     <SolidColorBrush x:Key="PrimaryDarkerBrush" Color="{StaticResource PrimaryDarkerColor}" />
     <SolidColorBrush x:Key="BackgroundDefaulBrush" Color="{StaticResource BackgroundDefaultColor}" />
+    <SolidColorBrush x:Key="BackgroundWhiteBrush" Color="{StaticResource BackgroundWhiteColor}" />
     <SolidColorBrush x:Key="TitleBrush" Color="{StaticResource TitleColor}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="{StaticResource TextTertiaryColor}" />
     <SolidColorBrush x:Key="PlaceholderBrush" Color="{StaticResource PlaceholderColor}" />
     <SolidColorBrush x:Key="InputBorderBrush" Color="{StaticResource InputBorderColor}" />
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}" />
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}" />
 
 </ResourceDictionary>
